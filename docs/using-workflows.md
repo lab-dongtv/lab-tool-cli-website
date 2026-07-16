@@ -16,6 +16,18 @@ Claude detects its shape, opens the matching workflow, and follows it
 step-by-step. The workflow files are the source of truth — if they ever
 disagree with `CLAUDE.md`, the workflow wins.
 
+## Common commands
+
+Four slash commands cover the commands you'll reach for most, each matched to
+a different point in an issue's lifecycle:
+
+| Command | When to use it |
+|---|---|
+| `/issue <N>` | Start a **fresh issue**. Fetches issue `<N>` (and its comment thread), detects whether it's a component or a page, and runs the matching workflow end-to-end. |
+| `/pr <N>` | Work an **existing PR**. Most commonly: the PR has review feedback — reads the inline review comments and top-level comments, then fixes the existing branch in place (it can also pick up and continue an AI-authored PR). |
+| `/pr-review <N>` | **Cross-review a teammate's PR.** Builds a Figma-vs-live evidence pack (screenshots + pixel diffs) and drafts a first-person review — read-only on the partner's branch; it never edits or auto-posts. |
+| `/verify-feedback <finding>` | The final **human-check** step on a built unit. Describe what looks off (e.g. "gap under SectionMv is too tall"); it triages the finding as a real bug or a tooling/design false positive, then fixes only real bugs. Paste a screenshot straight into the CLI with `Ctrl+V` to hand it evidence for the finding. |
+
 ## How Claude picks the workflow
 
 Routing is by the fields in the issue you paste (or that `/issue <N>` fetches):
