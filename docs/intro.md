@@ -8,7 +8,7 @@ slug: /
 **aqua-cli** is a CLI that scaffolds a Claude-Code,
 Figma-driven component/page development workflow into any project — the
 `.claude/` config, the `scripts/` toolbelt, reference `development-docs/`, the
-`WORKFLOW-*.md` playbooks, and the Figma/Playwright wiring
+`WORKFLOW.md` playbook, and the Figma/Playwright wiring
 (`.mcp.json`, `.env.local`, a `CLAUDE.md` block).
 
 It is a focused, single-target sibling of `aidk`: Claude Code only, and the

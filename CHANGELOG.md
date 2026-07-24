@@ -4,6 +4,33 @@ All notable changes to `@aquaring/aqua-cli` are documented here. The format
 follows [Keep a Changelog](https://keepachangelog.com/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.8.0] — 2026-07-24
+
+### Changed
+
+- **Figma access switched from the desktop MCP server to the REST API**:
+  scripts read `FIGMA_API_TOKEN` from `.env.local` — no desktop app needed,
+  fully headless. Restores true 2× reference renders
+  (`figma-screenshot.mjs [scale]` works again), real override text (the MCP
+  placeholder-text bug), raw image fills (`figma-images.mjs fills`), and
+  any-file access by `fileKey`. Removed: the figma `.mcp.json` server entry,
+  `figma-mcp.mjs`, `figma-asset.mjs`, and the MCP probe hook (now
+  `check-figma-api.sh` probing `/v1/me`). `section-builder` fetches node
+  data via `figma-fetch.mjs` (which gains `--pages` / `--depth`).
+  **Migration:** replace `FIGMA_MCP_URL` with `FIGMA_API_TOKEN` in `.env.local`.
+
+### Fixed
+
+- `/aqua-cli-init` preflight checks the `.aqua-cli.json` install manifest
+  (was still checking the pre-rename `.cpdk.json`), and offers to **clone the
+  project source** into a subfolder when run at a wrapper root instead of
+  telling the user to pull the code themselves.
+
+### Docs
+
+- New site guides: **Your first project**, **Project rules** (with
+  AI-assisted rule-authoring examples), and a **Commands** reference.
+
 ## [0.7.0] — 2026-07-23
 
 ### Added

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # Using the workflow
@@ -42,7 +42,7 @@ New issues are authored with `/aqua-cli-create-issue`.
 
 ## Key mechanics
 
-- **No `spec.html`, no per-unit approval.** The Figma MCP design context plus
+- **No `spec.html`, no per-unit approval.** The Figma node data (REST API) plus
   the reference PNG *is* the spec; convergence is gated by
   `scripts/visual-diff.py` (windowed SSIM + per-band localization), not by a
   human sitting.

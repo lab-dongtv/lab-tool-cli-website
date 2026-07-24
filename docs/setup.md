@@ -15,7 +15,7 @@ Figma→code workflow. Follow the steps in order.
 | **npm** | runs `npx` and reads your registry auth | `npm -v` |
 | **Claude Code** | the workflow runs inside it | `claude --version` |
 | **A GitHub account with access to the `@aquaring` packages** | aqua-cli is published privately to GitHub Packages | — |
-| **The Figma desktop app** | the workflow reads designs via the Figma desktop MCP server (no API key) | the app opens and you can log in |
+| **A Figma personal access token** | the workflow reads designs via the Figma REST API | Figma → Settings → Personal access tokens |
 
 ## Step 1 — Authenticate to GitHub Packages
 
@@ -42,16 +42,15 @@ token — the registry line alone returns `401`.
    A version number means you're authenticated. A `401`/`403` means the token
    is missing, expired, or lacks `read:packages`.
 
-## Step 2 — Enable the Figma desktop MCP server
+## Step 2 — Create a Figma personal access token
 
-The workflow's fetch scripts read designs through the **Figma desktop app's
-local MCP server** — no API key or personal access token is needed.
+The workflow's fetch scripts read designs through the **Figma REST API**.
 
-1. Install and open the **Figma desktop app** (not the browser) and log in.
-2. Enable *Figma → Preferences → "Enable local MCP Server"*. The server
-   listens at `http://127.0.0.1:3845/mcp`.
-3. Open the design file you'll be building from. The MCP server only sees the
-   **currently open file** — keep it open while working.
+1. In Figma: *Settings → Security → Personal access tokens → Generate new token*.
+2. Scopes (read-only): **File content** (required), **Current user**
+   (recommended — the SessionStart hook probes `/v1/me`), **Variables**
+   (recommended — some design systems use Figma Variables).
+3. Keep the token handy for Step 4 — it goes in `.env.local`, never in git.
 
 ## Step 3 — Install the kit into your project
 
@@ -68,27 +67,25 @@ aqua-cli init
 - **Copies:** `.claude/`, `scripts/`, `development-docs/`, `PROMPT.md`, and the
   `WORKFLOW-*.md` playbooks.
 - **Merges (idempotent, reversible):** appends a marked block to `CLAUDE.md`,
-  adds the Playwright and Figma (desktop MCP) servers to `.mcp.json`, adds
-  `FIGMA_MCP_URL` to `.env.local`, and ensures `.env.local` is listed in
+  adds the Playwright server to `.mcp.json`, adds
+  `FIGMA_API_TOKEN` to `.env.local`, and ensures `.env.local` is listed in
   `.gitignore` (creating the file if needed).
 - **Writes** a `.aqua-cli.json` manifest recording exactly what it added.
 
 Existing files are left untouched unless you pass `--force`. See
 [CLI Usage](./cli-usage.md) for `--force`, `update`, and `uninstall`.
 
-## Step 4 — Confirm the MCP endpoint (usually nothing to do)
+## Step 4 — Put your token in `.env.local`
 
-`init` created (or appended to) **`.env.local`** with the standard desktop MCP
-endpoint:
+`init` created (or appended to) **`.env.local`** with a placeholder:
 
 ```
-FIGMA_MCP_URL=http://127.0.0.1:3845/mcp
+FIGMA_API_TOKEN=figd_replace_me
 ```
 
-- The default is correct for a normal Figma desktop install — only change it
-  if your desktop app serves MCP elsewhere.
-- The Figma scripts read from **`.env.local`** specifically — not `.env` — and
-  fall back to the default endpoint when the variable is absent.
+- Replace the placeholder with the token from Step 2.
+- The Figma scripts read from **`.env.local`** specifically — not `.env` —
+  (a `FIGMA_API_TOKEN` environment variable also works and takes precedence).
 - `.env.local` stays in `.gitignore` (added by `init`). Confirm with
   `git check-ignore .env.local` (it should echo the path).
 
@@ -96,8 +93,7 @@ FIGMA_MCP_URL=http://127.0.0.1:3845/mcp
 
 1. Open the project in **Claude Code**. It picks up the merged `.mcp.json`, which
    registers the **Playwright MCP** server used for live measurement during
-   verification (installed on demand via `npx` — no separate install step) and
-   the **Figma MCP** server (the desktop app's local endpoint).
+   verification (installed on demand via `npx` — no separate install step).
 2. Sanity-check the install:
 
    ```bash
@@ -105,9 +101,8 @@ FIGMA_MCP_URL=http://127.0.0.1:3845/mcp
    ls .claude scripts development-docs
    ```
 
-3. Confirm the Figma desktop MCP server answers. A SessionStart hook probes it
-   automatically; if a fetch reports `Cannot reach the Figma desktop MCP
-   server`, re-check Step 2 (desktop app running, local MCP server enabled,
+3. Confirm the token works. A SessionStart hook probes `/v1/me` automatically;
+   if a fetch reports a 401/403, re-check Steps 2 and 4 (token valid, scopes,
    design file open).
 
 You're ready — paste a component or page issue and Claude will route to the
@@ -137,6 +132,6 @@ echo 'eval "$(aqua-cli completion bash)"' >> ~/.bashrc && source ~/.bashrc
 | Symptom | Cause / fix |
 |---|---|
 | `npm install -g @aquaring/aqua-cli` → `401`/`403` | GitHub Packages auth — recheck Step 1 (`read:packages` token in `~/.npmrc`). |
-| `Cannot reach the Figma desktop MCP server` during a fetch | The desktop app isn't running, or *Enable local MCP Server* is off (Step 2). |
-| Figma fetch says `No node could be found` | The design file containing that node isn't the one open in the desktop app — open the right file and retry. |
+| `Figma API 401/403` during a fetch | `FIGMA_API_TOKEN` missing, expired, or lacking the File-content scope (Steps 2/4). |
+| Figma fetch says no document for node | Wrong `fileKey`, node deleted, or the node-id used dash form — use the colon form (`123:456`). |
 | Re-running `init` warns about existing files | Expected — `init` won't overwrite without `--force`. Use [`update`](./cli-usage.md) to refresh instead. |

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 9
 ---
 
 # Internals
@@ -16,7 +16,7 @@ install, update, and uninstall.
   Re-apply replaces the block; uninstall strips only that block.
 - **.mcp.json** — deep-merge of `mcpServers`; the manifest records which server
   keys aqua-cli added so uninstall removes only those.
-- **.env.local** — appends `FIGMA_MCP_URL` only if absent; uninstall removes the
+- **.env.local** — appends `FIGMA_API_TOKEN` only if absent; uninstall removes the
   line only when it still holds the default `http://127.0.0.1:3845/mcp` value.
 - **.gitignore** — ensures `.env.local` is ignored (creates the file if absent);
   the manifest records whether aqua-cli added the line and whether it created the

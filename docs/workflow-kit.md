@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 7
 ---
 
 # What gets installed
@@ -12,7 +12,7 @@ sidebar_position: 4
 | `PROMPT.md`, `WORKFLOW.md` | copy | The auto-convergence workflow playbook |
 | `CLAUDE.md` | merge | Project rules appended in a `cpdk` marker block |
 | `.mcp.json` | merge | Playwright + Figma (desktop) MCP servers |
-| `.env.local` | merge | `FIGMA_MCP_URL` |
+| `.env.local` | merge | `FIGMA_API_TOKEN` |
 | `.gitignore` | merge | ensures `.env.local` is ignored |
 
 The workflow itself — issue intake, Figma fetch, section decomposition,

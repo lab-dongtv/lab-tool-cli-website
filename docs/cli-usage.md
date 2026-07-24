@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 8
 ---
 
 # CLI Usage
@@ -8,8 +8,8 @@ sidebar_position: 3
 
 Installs the workflow kit into the current directory: copies `.claude/`,
 `scripts/`, `development-docs/`, `PROMPT.md`, and the `WORKFLOW-*.md` files; appends a
-marked block to `CLAUDE.md`; merges the Playwright and Figma (desktop MCP)
-servers into `.mcp.json`; ensures `FIGMA_MCP_URL` exists in `.env.local`;
+marked block to `CLAUDE.md`; merges the Playwright server
+into `.mcp.json`; ensures `FIGMA_API_TOKEN` exists in `.env.local`;
 ensures `.env.local` is ignored in `.gitignore`; and writes the `.aqua-cli.json`
 manifest. `--force` overwrites and skips the re-init prompt.
 
@@ -22,7 +22,7 @@ Idempotent — the `CLAUDE.md` block is replaced in place, not duplicated.
 
 Removes exactly what aqua-cli installed, using the manifest: copied paths, the
 `CLAUDE.md` block, aqua-cli-added `.mcp.json` servers, the default
-`FIGMA_MCP_URL` line, and the `.env.local` entry aqua-cli added to `.gitignore`.
+`FIGMA_API_TOKEN` line, and the `.env.local` entry aqua-cli added to `.gitignore`.
 A customized (edited) endpoint value is preserved.
 
 ## `aqua-cli completion [shell]`
