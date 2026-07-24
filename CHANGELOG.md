@@ -4,6 +4,85 @@ All notable changes to `@aquaring/aqua-cli` are documented here. The format
 follows [Keep a Changelog](https://keepachangelog.com/), and the project
 adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] — 2026-07-23
+
+### Added
+
+- **Cursor as a second init target.** `aqua-cli init --target=claude-code|cursor|both`
+  (or an interactive picker) installs the kit for the chosen editor(s). Cursor
+  is copy-driven: everything under `templates/cursor/` and `templates/common/`
+  is scaffolded to `.cursor/…` and the project root; no rule generation, no
+  Cursor-specific merges this round.
+- **Dual-scope publishing.** The CLI now ships under both `@aquaring/aqua-cli`
+  and `@aquaringlab/aqua-cli` (GitHub Packages), via the new `./make-release-aql`
+  script and the `package.aquaringlab.json` manifest.
+
+### Changed
+
+- **Templates restructured** under `templates/{common,claude-code,cursor}/`;
+  `aqua-cli` installs per selected target from there instead of a flat root
+  payload. Payload model is now convention-driven directory copies (`COPY_DIRS`)
+  plus an explicit special-file table (`SPECIALS`).
+- **`.aqua-cli.json` manifest**: `targets` is now a keyed object (`common` +
+  each installed target, each owning its `copied` list); `merges` stays a single
+  top-level block.
+- **`uninstall` is file-surgical** — it removes exactly the tracked files and
+  never deletes the `.claude/` or `.cursor/` directories.
+- `.aqua-cli.map.json` is regenerated target-keyed; `package.json` `files`
+  collapses to `["dist/", "templates/", "CHANGELOG.md"]`; the repository now
+  points at `aquaringlab/lab-tool-agent-component`.
+
+### Fixed
+
+- `update` and `uninstall` no longer crash on a legacy (targetless) manifest
+  written by an older aqua-cli — they exit cleanly asking you to re-run
+  `aqua-cli init --force`.
+
+## [0.6.0] — 2026-07-23
+
+### Added
+
+- **Auto-convergence workflow** — `/aqua-cli-issue` + `WORKFLOW.md`: no `spec.html`,
+  parallel `section-builder` agents self-converge against
+  `scripts/converge.mjs` (SSIM diff, hard 3-iteration cap), `rules-checker`
+  convention post-pass, single-file review via `scripts/evidence-pack.mjs`.
+  Two user sittings per issue (intake, evidence review).
+- **`/aqua-cli-pr <number>`** — review-feedback continuation: fetch
+  PR + inline review comments, classify each item (convention
+  fix / structural / doctrine conflict — conflicts surface to the user and
+  amend RULES.md first), re-converge touched units, one new commit on top,
+  PR notes + review reply.
+- **`/aqua-cli-verify <finding>`** — measurement-first triage of one manual
+  review finding: classify real-bug vs tooling vs design-source false
+  positive (the latter requires a two-part proof), fix real bugs with exact
+  Figma-derived values, re-converge. Port of the retired `/verify-feedback`
+  doctrine to the convergence workflow.
+- `/aqua-cli-init` (renamed from `/cpdk-init`) now generates
+  `development-docs/build-card.md` (≤3KB builder doctrine) and writes
+  `verification.convergeThreshold` (default 0.90).
+
+### Changed
+
+- Workflow Claude commands carry the `aqua-cli-` prefix: `/aqua-cli-init`,
+  `/aqua-cli-issue`, `/aqua-cli-pr`, `/aqua-cli-create-issue` (renamed from
+  `/cpdk-init`, `/issue-fast`, and `/create-issue`).
+- `converge.mjs` supports reference-less breakpoints (e.g. SP not designed
+  yet): diffs only referenced breakpoints, still captures the other render,
+  surfaces the skip in the evidence pack.
+
+### Removed
+
+- **The entire spec-pipeline workflow.** `WORKFLOW-CORE.md`,
+  `WORKFLOW-COMPONENT.md`, `WORKFLOW-PAGE.md`, `WORKFLOW-ESCALATION.md`, and
+  `WORKFLOW-AI-PR.md`; the old spec-pipeline `/issue`, `/pr`, `/pr-review`,
+  `/monitor`, and `/verify-feedback` commands (replaced by the `aqua-cli-*`
+  commands above); the `html-spec-builder`, `html-spec-corrector`,
+  `doctrine-conflict`, and `visual-diff` agents; the `spec-batch.mjs`,
+  `spec-gate.mjs`, `figma-html.mjs`, and `content-parity.mjs` scripts and the
+  `gate-html-spec.sh` hook. `WORKFLOW.md` is now the single workflow;
+  the fragments it borrowed (shared-component serialization, link-URL rules,
+  hand-off report) are inlined. Recoverable from git history if ever needed.
+
 ## [0.5.1] — 2026-07-16
 
 ### Changed

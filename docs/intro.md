@@ -16,6 +16,6 @@ kit installs as one cohesive unit rather than a pick-list of components.
 
 ## When to use it
 
-- You are starting a new repo that follows the Meitetsu Figma→code workflow.
-- You want the `/issue` and `/pr` slash commands, guard hooks, and diff scripts
+- You are starting a new repo that follows the origin project's Figma→code workflow.
+- You want the `/aqua-cli-issue` and `/aqua-cli-create-issue` slash commands, guard hooks, and diff scripts
   in a project without copying them by hand.

@@ -113,7 +113,14 @@ FIGMA_MCP_URL=http://127.0.0.1:3845/mcp
 You're ready — paste a component or page issue and Claude will route to the
 matching workflow. See [Using the workflows](./using-workflows.md).
 
-## Step 6 (optional) — Shell completion
+## Step 6 — Run `/aqua-cli-init`
+
+In the Claude Code session, run `/aqua-cli-init`. It explores the project,
+derives `cpdk.config.json`, interviews you for what it can't infer, fills
+`RULES.md` from the shipped template, and verifies the wiring. Until it
+runs, the path-aware gates warn instead of enforcing.
+
+## Step 7 (optional) — Shell completion
 
 Enable tab-completion for the `aqua-cli` command:
 
